@@ -1,8 +1,11 @@
 import React from 'react';
+import "../styles/registryPage.css"
 
-export function RegistryPage(){
+export function RegistryPage() {
 
     return (
-        <p>Registry component</p>
+        <div className="center-screen">
+            <p>Registry component</p>
+        </div>
     );
 }

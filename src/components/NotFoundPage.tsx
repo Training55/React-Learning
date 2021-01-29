@@ -1,8 +1,10 @@
 import React from "react";
-
-export function NotFound(){
+import "../styles/notFoundPage.css"
+export function NotFound() {
 
     return (
-        <p>Page was not found!</p>
+        <div className="center-screen">
+            <p>Page was not found!</p>
+        </div>
     )
 }

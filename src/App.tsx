@@ -11,10 +11,13 @@ import {NotFound} from "./components/NotFoundPage";
 
 function App() {
     return (
-        <div className="topnav">
-            <Link to="/">Recipe of the day</Link>
-            <Link to="/favorites">Favorites</Link>
-            <Link to="/registry">Registry</Link>
+        <div>
+
+            <div className="topnav">
+                <Link to="/">Recipe of the day</Link>
+                <Link to="/favorites">Favorites</Link>
+                <Link to="/registry">Registry</Link>
+            </div>
 
             <Switch>
                 <Route exact path="/"><RecipeOfTheDayPage/></Route>

@@ -1,8 +1,11 @@
 import React from 'react';
+import '../styles/recipeOfTheDayPage.css'
 
-export function RecipeOfTheDayPage(){
+export function RecipeOfTheDayPage() {
 
     return (
-        <p>Recipe of the day component</p>
+        <div className="center-screen">
+            <p>Recipe of the day component</p>
+        </div>
     );
 }
