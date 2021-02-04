@@ -6,16 +6,3 @@
     text-align: center;
     min-height: 100vh;
 }
-
-.recipePicture {
-    width: 250px;
-    border-radius: 8px;
-}
-
-.recipeSection {
-    margin: 0em 70em 30em 0em;
-}
-
-.first{
-    column-count: 2;
-}

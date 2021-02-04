@@ -10,6 +10,10 @@ import {NotFound} from "./components/NotFoundPage";
 
 
 function App() {
+
+    let recipes: string[] = ["Spaghetti Bolognese, Pizza Franco, Salsiccia"];
+
+
     return (
         <div>
 
@@ -21,7 +25,7 @@ function App() {
 
             <Switch>
                 <Route exact path="/"><RecipeOfTheDayPage/></Route>
-                <Route path="/favorites"><FavoritesPage/></Route>
+                <Route path="/favorites"><FavoritesPage recipes={recipes}/></Route>
                 <Route path="/registry"><RegistryPage/></Route>
                 <Route><NotFound/></Route>
             </Switch>
