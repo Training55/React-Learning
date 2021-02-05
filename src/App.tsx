@@ -2,7 +2,7 @@ import React from 'react';
 import "./styles/navbar.css"
 import './App.css';
 import {Route, Switch} from "react-router";
-import {RecipeOfTheDayPage} from "./components/RecipeOfTheDayPage";
+import {RandomRecipePage} from "./components/RandomRecipePage";
 import {FavoritesPage} from "./components/FavoritesPage";
 import {RegistryPage} from "./components/RegistryPage";
 import {Link} from "react-router-dom";
@@ -18,13 +18,13 @@ function App() {
         <div>
 
             <div className="topnav">
-                <Link to="/">Recipe of the day</Link>
+                <Link to="/">Random Recipe</Link>
                 <Link to="/favorites">Favorites</Link>
                 <Link to="/registry">Registry</Link>
             </div>
 
             <Switch>
-                <Route exact path="/"><RecipeOfTheDayPage/></Route>
+                <Route exact path="/"><RandomRecipePage/></Route>
                 <Route path="/favorites"><FavoritesPage recipes={recipes}/></Route>
                 <Route path="/registry"><RegistryPage/></Route>
                 <Route><NotFound/></Route>
