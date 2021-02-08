@@ -4,17 +4,21 @@ import {ReactComponent as LikeSvg} from '../resources/favorite_border-24px (1).s
 import {ReactComponent as LikedSvg} from "../resources/favorite-24px.svg";
 import {fetchJson} from "../helperFunctions/helperBackend";
 import {appId, appKey} from "../constants/API";
+import {IDish} from "../IDish";
+import {generateHash} from "../utils/Hash";
 
 interface ImageAPIResponse {
     image: string
 }
 
-export function RandomRecipePage() {
+export function RandomRecipePage(props: any) {
 
-    const [liked, setLiked] = useState(false);
-    const [link, setLink] = useState("");
-    const [recipe, setRecipe] = useState([""]);
-    const [title, setTitle] = useState("");
+    const [dish, setDish] = useState<IDish>({
+        name: "",
+        imageUrl: "",
+        recipe: [],
+        liked: false
+    })
 
     useEffect(() => {
         orchestrate().catch(error => console.log(error))
@@ -27,9 +31,7 @@ export function RandomRecipePage() {
         let dishName = getDishName(dishUrl);
         let recipeResponse = await fetchRecipe(dishName);
 
-
-        setState(recipeResponse, dishName, pictureObject);
-
+        createDish(recipeResponse, dishName, pictureObject);
     }
 
     let fetchPicture = async (): Promise<ImageAPIResponse> => {
@@ -58,16 +60,37 @@ export function RandomRecipePage() {
         return dish.charAt(0).toUpperCase() + dish.substring(1).toLowerCase();
     }
 
-    let setState = (recipeResponse: any, title: string, imageUrl: ImageAPIResponse) => {
+    let createDish = (recipeResponse: any, title: string, imageUrl: ImageAPIResponse) => {
 
         let recipeArray: string[] = [];
+        let ingredients = recipeResponse?.hits[0]?.recipe?.ingredients;
+        ingredients.forEach((ing: { text: string; }) => recipeArray.push(ing.text));
 
-        let ingredients: any[] = recipeResponse?.hits[0]?.recipe?.ingredients;
-        ingredients.forEach(ingr => recipeArray.push(ingr.text));
+        let favoriteStatus = props.markedAsFavorite(generateHash(recipeArray.join()));
 
-        setLink(imageUrl.image);
-        setRecipe(recipeArray);
-        setTitle(title);
+        let dish: IDish = {
+            imageUrl: imageUrl.image,
+            name: title,
+            recipe: recipeArray,
+            liked: favoriteStatus
+        }
+        
+        setDish(dish);
+    }
+
+    let saveAsFavorite = () =>{
+
+        setDish({
+            ...dish,
+            liked : !dish.liked
+        })
+
+        if(!dish.liked){
+            props.addToFavorite(dish);
+        } else{
+            props.removeFromFavorite(dish);
+        }
+
     }
 
 
@@ -81,20 +104,20 @@ export function RandomRecipePage() {
                     <div className="col-2 ">
 
                         <div style={{backgroundColor: "#FFFFFF"}} className="row ">
-                            <p className="textCenter"><b>{title}</b></p>
+                            <p className="textCenter"><b>{dish.name}</b></p>
                         </div>
 
                         <div style={{backgroundColor: "#FFFFFF"}} className="row align-items-center">
 
                             <div className="col">
-                                <img className="recipePicture"
-                                     src={link}/>
+                                <img alt="recipe" className="recipePicture"
+                                     src={dish.imageUrl}/>
                             </div>
                         </div>
 
                         <div className="row align-items-center">
-                            {liked ? <LikedSvg onClick={() => setLiked(false)}/> :
-                                <LikeSvg onClick={() => setLiked(true)}/>}
+                            {dish.liked ? <LikedSvg onClick={() => saveAsFavorite()}/> :
+                                <LikeSvg onClick={() => saveAsFavorite()}/>}
                         </div>
                     </div>
 
@@ -114,7 +137,7 @@ export function RandomRecipePage() {
                         <div className="row">
                             <div className="col">
                                 <ul>
-                                    {recipe.map(recipe => {
+                                    {dish.recipe.map(recipe => {
                                         return <li>{recipe}</li>
                                     })}
                                 </ul>

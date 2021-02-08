@@ -1,19 +1,24 @@
 import React from 'react';
 import "../styles/favoritesPage.css"
+import {IDish} from "../IDish";
 
-interface PropertyInterface{
-    recipes: string[];
+interface IFavoriteProps{
+    favoriteDishes: IDish[]
 }
 
-export function FavoritesPage(props : PropertyInterface) {
+export function FavoritesPage({favoriteDishes}: IFavoriteProps) {
 
     return (
         <div className="center-screen">
             <p>Favorites component</p>
             <div>
-                {props.recipes.map((recipe) => (
-                    <p>{recipe}</p>
-                ))}
+                <ul>
+                    {
+                        favoriteDishes.map((dishes) => {
+                            return <li>{dishes.name}</li>
+                        })
+                    }
+                </ul>
             </div>
         </div>
     );
