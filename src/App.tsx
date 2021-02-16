@@ -2,20 +2,21 @@ import React from 'react';
 import "./styles/navbar.css"
 import './App.css';
 import {Route, Switch} from "react-router";
-import {RandomRecipePage} from "./components/RandomRecipePage";
-import {FavoritesPage} from "./components/FavoritesPage";
-import {RegistryPage} from "./components/RegistryPage";
+import RandomRecipePage from "./components/RandomRecipePage/RandomRecipePage";
+import FavoritesPage from "./components/FavoritesPage";
+import RegistryPage from "./components/RegistryPage";
 import {Link} from "react-router-dom";
-import {NotFound} from "./components/NotFoundPage";
+import NotFound from "./components/NotFoundPage";
 import {IDish} from "./IDish";
 import {generateHash} from "./utils/Hash";
+import {RandomRecipeErrorBoundary} from "./components/RandomRecipePage/RandomRecipeErrorBoundary";
 
 
 function App() {
 
     let favoriteDishes: IDish[] = [];
 
-    let addDishToFavorite = (dish: IDish) => {
+    const addDishToFavorite = (dish: IDish) => {
 
         let joinedRecipe = dish.recipe.join();
         let recipeHash = generateHash(joinedRecipe);
@@ -31,7 +32,7 @@ function App() {
         }
     }
 
-    let isDishAlreadyExistent = (recipeHash: number): boolean => {
+    const isDishAlreadyExistent = (recipeHash: number): boolean => {
 
         let dishExists = false;
 
@@ -46,7 +47,7 @@ function App() {
         return dishExists;
     }
 
-    let isDishMarkedAsFavorite = (recipeHash: number): boolean => {
+    const isDishMarkedAsFavorite = (recipeHash: number): boolean => {
 
         let favoriteStatus = false;
 
@@ -60,7 +61,7 @@ function App() {
         return favoriteStatus;
     }
 
-    let removeDishFromFavorite = (dish: IDish) => {
+    const removeDishFromFavorite = (dish: IDish) => {
         let index = favoriteDishes.indexOf(dish);
         favoriteDishes.splice(index);
     }
@@ -76,9 +77,12 @@ function App() {
             </div>
 
             <Switch>
-                <Route exact path="/"><RandomRecipePage addToFavorite={addDishToFavorite}
-                                                        removeFromFavorite={removeDishFromFavorite}
-                                                        markedAsFavorite={isDishMarkedAsFavorite}/></Route>
+                <Route exact path="/"><RandomRecipeErrorBoundary>
+                    <RandomRecipePage addToFavorite={addDishToFavorite}
+                                      removeFromFavorite={removeDishFromFavorite}
+                                      markedAsFavorite={isDishMarkedAsFavorite}/>
+                </RandomRecipeErrorBoundary>
+                </Route>
                 <Route path="/favorites"><FavoritesPage favoriteDishes={favoriteDishes}/></Route>
                 <Route path="/registry"><RegistryPage/></Route>
                 <Route><NotFound/></Route>

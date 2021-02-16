@@ -1,17 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import '../styles/randomRecipe.css'
-import {ReactComponent as LikeSvg} from '../resources/favorite_border-24px (1).svg';
-import {ReactComponent as LikedSvg} from "../resources/favorite-24px.svg";
-import {fetchJson} from "../helperFunctions/helperBackend";
-import {appId, appKey} from "../constants/API";
-import {IDish} from "../IDish";
-import {generateHash} from "../utils/Hash";
+import '../../styles/randomRecipe.css'
+import {ReactComponent as LikeSvg} from '../../resources/favorite_border-24px.svg';
+import {ReactComponent as LikedSvg} from "../../resources/favorite-24px.svg";
+import {fetchJson} from "../../helperFunctions/helperBackend";
+import {appId, appKey} from "../../constants/API";
+import {IDish} from "../../IDish";
+import {generateHash} from "../../utils/Hash";
+import {getDishNameOfUrl} from "../../helperFunctions/StringUtil";
+import {validateFoodishUrl} from "../../helperFunctions/InputValidatorUtil";
 
 interface ImageAPIResponse {
-    image: string
+    image: string | null
 }
 
-export function RandomRecipePage(props: any) {
+export default function RandomRecipePage(props: any) {
 
     const [dish, setDish] = useState<IDish>({
         name: "",
@@ -20,74 +22,73 @@ export function RandomRecipePage(props: any) {
         liked: false
     })
 
+    const [error, setError] = useState({error: null});
+
     useEffect(() => {
-        orchestrate().catch(error => console.log(error))
+        orchestrate().catch(error => {
+            setError(error);
+        });
     }, []);
 
-    let orchestrate = async (): Promise<any> => {
+    if (error.error !== null) {
+        throw error;
+    }
+
+    const orchestrate = async (): Promise<any> => {
 
         let pictureObject = await fetchPicture();
-        let dishUrl: string = pictureObject.image;
-        let dishName = getDishName(dishUrl);
+        let dishUrl: string | null = pictureObject.image;
+        let dishName = getDishNameOfUrl(dishUrl);
         let recipeResponse = await fetchRecipe(dishName);
 
         createDish(recipeResponse, dishName, pictureObject);
     }
 
-    let fetchPicture = async (): Promise<ImageAPIResponse> => {
+    const fetchPicture = async (): Promise<ImageAPIResponse> => {
         const IMAGE_API = "https://foodish-api.herokuapp.com/api";
         let imageUrlObject: ImageAPIResponse = await fetchJson(IMAGE_API);
+        validateFoodishUrl(imageUrlObject.image);
 
         return imageUrlObject;
     }
 
-    let fetchRecipe = async (dishName: string): Promise<any> => {
+    const fetchRecipe = async (dishName: string): Promise<any> => {
         const EDAMAM_API = "https://api.edamam.com/search?";
         let recipeResponse = await fetchJson(EDAMAM_API + `app_id=${appId}&app_key=${appKey}&q=${dishName}`)
 
         return recipeResponse;
     }
 
-    let getDishName = (dishUrl: string): string => {
-
-        let dish: string = dishUrl;
-
-        let slashIndex = dish.lastIndexOf("/");
-        dish = dish.substring(slashIndex + 1);
-        let dotIndex = dish.lastIndexOf(".");
-        dish = dish.substring(0, dotIndex);
-        dish = dish.replace(/[0-9]/g, '');
-        return dish.charAt(0).toUpperCase() + dish.substring(1).toLowerCase();
-    }
-
-    let createDish = (recipeResponse: any, title: string, imageUrl: ImageAPIResponse) => {
+    const createDish = (recipeResponse: any, title: string, imageUrl: ImageAPIResponse) : void => {
 
         let recipeArray: string[] = [];
         let ingredients = recipeResponse?.hits[0]?.recipe?.ingredients;
-        ingredients.forEach((ing: { text: string; }) => recipeArray.push(ing.text));
+        ingredients?.forEach((ing: { text: string; }) => recipeArray.push(ing.text));
 
         let favoriteStatus = props.markedAsFavorite(generateHash(recipeArray.join()));
 
-        let dish: IDish = {
-            imageUrl: imageUrl.image,
-            name: title,
-            recipe: recipeArray,
-            liked: favoriteStatus
+        if (imageUrl.image) {
+            let dish: IDish = {
+                imageUrl: imageUrl.image,
+                name: title,
+                recipe: recipeArray,
+                liked: favoriteStatus
+            }
+
+            setDish(dish);
         }
-        
-        setDish(dish);
     }
 
-    let saveAsFavorite = () =>{
+    const saveAsFavorite = () : void => {
 
         setDish({
             ...dish,
-            liked : !dish.liked
+            liked: !dish.liked
         })
 
-        if(!dish.liked){
+        if (!dish.liked) {
             props.addToFavorite(dish);
-        } else{
+        } else {
             props.removeFromFavorite(dish);
         }
 
@@ -116,8 +117,8 @@ export function RandomRecipePage(props: any) {
                         </div>
 
                         <div className="row align-items-center">
-                            {dish.liked ? <LikedSvg onClick={() => saveAsFavorite()}/> :
-                                <LikeSvg onClick={() => saveAsFavorite()}/>}
+                            {dish.liked ? <LikedSvg title="remove from favorite" onClick={() => saveAsFavorite()}/> :
+                                <LikeSvg title="mark as favorite" onClick={() => saveAsFavorite()}/>}
                         </div>
                     </div>
 
@@ -147,9 +148,8 @@ export function RandomRecipePage(props: any) {
                 </div>
                 <div className="row justify-content-center">
                     <div className="col">
-                        <button style={{marginLeft: "auto", marginRight: "auto", display: "block"}} type="button"
-                                className="btn btn-primary" onClick={orchestrate}>Get new recipe!
-                        </button>
+                        <button style={{marginLeft: "auto", marginRight: "auto", display: "block"}}
+                                className="btn btn-primary" onClick={orchestrate} title="button">Get new recipe!</button>
                     </div>
                 </div>
                 <br/>
@@ -158,3 +158,4 @@ export function RandomRecipePage(props: any) {
         </div>
     );
 }
+

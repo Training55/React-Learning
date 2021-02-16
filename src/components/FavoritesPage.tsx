@@ -6,7 +6,7 @@ interface IFavoriteProps{
     favoriteDishes: IDish[]
 }
 
-export function FavoritesPage({favoriteDishes}: IFavoriteProps) {
+export default function FavoritesPage({favoriteDishes}: IFavoriteProps) {
 
     return (
         <div className="center-screen">

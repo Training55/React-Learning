@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export function Recipe(){
+export default function Recipe(){
 
 
     return(

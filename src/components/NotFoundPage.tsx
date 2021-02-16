@@ -1,6 +1,6 @@
 import React from "react";
 import "../styles/notFoundPage.css"
-export function NotFound() {
+export default function NotFound() {
 
     return (
         <div className="center-screen">

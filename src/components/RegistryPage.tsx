@@ -1,7 +1,7 @@
 import React from 'react';
 import "../styles/registryPage.css"
 
-export function RegistryPage() {
+export default function RegistryPage() {
 
     return (
         <div className="center-screen">
