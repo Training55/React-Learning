@@ -20,15 +20,30 @@ export default function FavoritesPage(props: IFavoriteProps) {
 
     console.log(location.pathname);
 
+ /*   <ul className="list-group">
+        {
+            location.pathname === "/favorites" && props.favoriteDishes.map((dish) => {
+                return <li className="list-group-item"><Link to={"/favorites/" + dish.name}>{dish.name}</Link></li>
+            })
+        }
+    </ul>*/
+
     return <div className="center-screen">
-        <div>
-            <ul className="list-group">
-                {
-                    location.pathname === "/favorites" && props.favoriteDishes.map((dish) => {
-                        return <li className="list-group-item"><Link to={"/favorites/" + dish.name}>{dish.name}</Link></li>
-                    })
-                }
-            </ul>
+        <div className="row">
+            {
+                location.pathname === "/favorites" && props.favoriteDishes.map((dish) => {
+
+                    return <div className="card col">
+                        <img src={dish.imageUrl} className="card-img-top recipePicture"/>
+                        <div className="card-body">
+                            <h5 className="card-title">{dish.name}</h5>
+                        </div>
+                        <Link to={"/favorites/" + dish.name} className="btn btn-primary">See Recipe</Link>
+                    </div>
+
+
+                })
+            }
         </div>
 
         <Switch>
