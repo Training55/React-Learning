@@ -16,7 +16,7 @@ function App() {
 
     let favoriteDishes: IDish[] = [];
 
-    const addDishToFavorite = (dish: IDish) => {
+    const addDishToFavorite = (dish: IDish): void => {
 
         let joinedRecipe = dish.recipe.join();
         let recipeHash = generateHash(joinedRecipe);
@@ -61,7 +61,7 @@ function App() {
         return favoriteStatus;
     }
 
-    const removeDishFromFavorite = (dish: IDish) => {
+    const removeDishFromFavorite = (dish: IDish): void => {
         let index = favoriteDishes.indexOf(dish);
         favoriteDishes.splice(index);
     }
@@ -83,7 +83,10 @@ function App() {
                                       markedAsFavorite={isDishMarkedAsFavorite}/>
                 </RandomRecipeErrorBoundary>
                 </Route>
-                <Route path="/favorites"><FavoritesPage favoriteDishes={favoriteDishes}/></Route>
+                <Route path="/favorites"><FavoritesPage favoriteDishes={favoriteDishes}
+                                                        addToFavorite={addDishToFavorite}
+                                                        removeFromFavorite={removeDishFromFavorite}
+                /></Route>
                 <Route path="/registry"><RegistryPage/></Route>
                 <Route><NotFound/></Route>
             </Switch>

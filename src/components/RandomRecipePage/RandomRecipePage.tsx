@@ -1,19 +1,24 @@
 import React, {useEffect, useState} from 'react';
 import '../../styles/randomRecipe.css'
-import {ReactComponent as LikeSvg} from '../../resources/favorite_border-24px.svg';
-import {ReactComponent as LikedSvg} from "../../resources/favorite-24px.svg";
 import {fetchJson} from "../../helperFunctions/helperBackend";
 import {appId, appKey} from "../../constants/API";
 import {IDish} from "../../IDish";
 import {generateHash} from "../../utils/Hash";
 import {getDishNameOfUrl} from "../../helperFunctions/StringUtil";
 import {validateFoodishUrl} from "../../helperFunctions/InputValidatorUtil";
+import RecipeCard from "../RecipeCard";
 
 interface ImageAPIResponse {
-    image: string | null
+    image: string | null,
 }
 
-export default function RandomRecipePage(props: any) {
+interface PropsInterface{
+    addToFavorite(dish:IDish): void;
+    removeFromFavorite(dish: IDish): void;
+    markedAsFavorite(recipeHash: number): boolean;
+}
+
+export default function RandomRecipePage(props: PropsInterface) {
 
     const [dish, setDish] = useState<IDish>({
         name: "",
@@ -79,73 +84,10 @@ export default function RandomRecipePage(props: any) {
         }
     }
 
-    const saveAsFavorite = () : void => {
-
-        setDish({
-            ...dish,
-            liked: !dish.liked
-        })
-
-        if (!dish.liked) {
-            props.addToFavorite(dish);
-        } else {
-            props.removeFromFavorite(dish);
-        }
-
-    }
-
-
     return (
         <div>
             <div className="first ">
-
-                <div style={{backgroundColor: "#FFDC00"}}
-                     className="row align-items-center justify-content-center heights">
-
-                    <div className="col-2 ">
-
-                        <div style={{backgroundColor: "#FFFFFF"}} className="row ">
-                            <p className="textCenter"><b>{dish.name}</b></p>
-                        </div>
-
-                        <div style={{backgroundColor: "#FFFFFF"}} className="row align-items-center">
-
-                            <div className="col">
-                                <img alt="recipe" className="recipePicture"
-                                     src={dish.imageUrl}/>
-                            </div>
-                        </div>
-
-                        <div className="row align-items-center">
-                            {dish.liked ? <LikedSvg title="remove from favorite" onClick={() => saveAsFavorite()}/> :
-                                <LikeSvg title="mark as favorite" onClick={() => saveAsFavorite()}/>}
-                        </div>
-                    </div>
-
-                    <div style={{
-                        minHeight: "21.35rem",
-                        maxHeight: "21.35rem",
-                        maxWidth: "50rem",
-                        minWidth: "50rem",
-                        backgroundColor: "#3D9970"
-                    }}
-                         className="col-4 scrollable">
-                        <div className="row ">
-                            <div className="col">
-                                <p className="textCenter"><b>Recipe</b></p>
-                            </div>
-                        </div>
-                        <div className="row">
-                            <div className="col">
-                                <ul>
-                                    {dish.recipe.map(recipe => {
-                                        return <li>{recipe}</li>
-                                    })}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <RecipeCard dish={dish} addToFavorite={props.addToFavorite} removeFromFavorite={props.removeFromFavorite}/>
                 <div className="row justify-content-center">
                     <div className="col">
                         <button style={{marginLeft: "auto", marginRight: "auto", display: "block"}}
