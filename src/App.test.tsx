@@ -6,9 +6,7 @@ import {BrowserRouter} from "react-router-dom";
 
 beforeEach(() => {
     let httpCall = jest.fn();
-
-    // repeat order for third and fourth invocation
-
+    
     httpCall
         .mockReturnValueOnce({
             json: () => Promise.resolve({image: "https://foodish-api.herokuapp.com/images/biryani/biryani70.jpg"}),
@@ -16,20 +14,18 @@ beforeEach(() => {
         })
         .mockReturnValueOnce({
                 json: () => Promise.resolve({
-                    hits: new Array().push({
+                    hits: [{
                         recipe: {
-                            ingredients: new Array().push(
-                                [
-                                    {
-                                        text: "Rice"
-                                    },
-                                    {
-                                        text: "Chicken"
-                                    }
-                                ]
-                            )
+                            ingredients: [
+                                {
+                                    text: "Rice"
+                                },
+                                {
+                                    text: "Chicken"
+                                }
+                            ]
                         }
-                    })
+                    }]
                 }),
                 ok: true
             }
@@ -42,20 +38,18 @@ beforeEach(() => {
         )
         .mockReturnValueOnce({
             json: () => Promise.resolve({
-                hits: new Array().push({
+                hits: [{
                     recipe: {
-                        ingredients: new Array().push(
-                            [
-                                {
-                                    text: "Rice"
-                                },
-                                {
-                                    text: "Chicken"
-                                }
-                            ]
-                        )
+                        ingredients: [
+                            {
+                                text: "Rice"
+                            },
+                            {
+                                text: "Chicken"
+                            }
+                        ]
                     }
-                })
+                }]
             }),
             ok: true
         });
@@ -111,3 +105,25 @@ test("Dish is added on favorite page when marked on recipe of the day and remove
 
     }
 );
+
+test("Recipe Card appears properly when a dish is marked as favorite", async () => {
+
+    render(<BrowserRouter><App></App></BrowserRouter>)
+
+    fireEvent.click(screen.getByText("Random Recipe"));
+
+    // wait and validate that Biryani is on recipe of the day page
+    await waitFor(() => expect(screen.getByText("Biryani")).toBeInTheDocument());
+
+    // mark as favorite and switch page
+    fireEvent.click(screen.getByTitle("mark as favorite"));
+    fireEvent.click(screen.getByText("Favorites"));
+
+    // wait and validate that on favorites page and Biryani is shown in unordered list
+    await waitFor(() => expect(screen.getByText("Biryani")).toBeInTheDocument());
+
+    fireEvent.click(screen.getByText("See Recipe"));
+
+    expect(screen.getByText("Biryani")).toBeInTheDocument();
+    expect(screen.getByText("Rice")).toBeInTheDocument();
+});
