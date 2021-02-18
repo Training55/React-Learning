@@ -81,7 +81,6 @@ test("Dish is added on favorite page when marked on recipe of the day", async ()
         fireEvent.click(screen.getByText("Favorites"));
 
         // wait and validate that on favorites page and Biryani is shown in unordered list
-        await waitFor(() => expect(screen.getByText("Favorites component")).toBeInTheDocument());
         await waitFor(() => expect(screen.getByText("Biryani")).toBeInTheDocument());
 
     }
@@ -90,6 +89,7 @@ test("Dish is added on favorite page when marked on recipe of the day", async ()
 test("Dish is added on favorite page when marked on recipe of the day and removed properly again", async () => {
         render(<BrowserRouter><App></App></BrowserRouter>)
 
+        fireEvent.click(screen.getByText("Random Recipe"));
 
         // wait and validate that Biryani is on recipe of the day page
         await waitFor(() => expect(screen.getByText("Biryani")).toBeInTheDocument());
@@ -99,7 +99,6 @@ test("Dish is added on favorite page when marked on recipe of the day and remove
         fireEvent.click(screen.getByText("Favorites"));
 
         // wait and validate that on favorites page and Biryani is shown in unordered list
-        await waitFor(() => expect(screen.getByText("Favorites component")).toBeInTheDocument());
         await waitFor(() => expect(screen.getByText("Biryani")).toBeInTheDocument());
 
         // change back to random recipe page// it is configured that the same random recipe will be loaded
@@ -108,7 +107,6 @@ test("Dish is added on favorite page when marked on recipe of the day and remove
 
         fireEvent.click(screen.getByTitle("remove from favorite"));
         fireEvent.click(screen.getByText("Favorites"));
-        await waitFor(() => expect(screen.getByText("Favorites component")).toBeInTheDocument());
         await waitFor(() => expect(screen.queryByText("Biryani")).not.toBeInTheDocument());
 
     }

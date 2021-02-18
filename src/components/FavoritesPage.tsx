@@ -20,18 +20,22 @@ export default function FavoritesPage(props: IFavoriteProps) {
 
     console.log(location.pathname);
 
- /*   <ul className="list-group">
-        {
-            location.pathname === "/favorites" && props.favoriteDishes.map((dish) => {
-                return <li className="list-group-item"><Link to={"/favorites/" + dish.name}>{dish.name}</Link></li>
-            })
-        }
-    </ul>*/
+    let overviewCards = null;
 
-    return <div className="center-screen">
-        <div className="row">
+    if((!props.favoriteDishes || props.favoriteDishes.length == 0) && location.pathname === "/favorites"){
+
+        overviewCards = <div className="">
+            <div>
+                <div className="alert alert-info" role="alert">
+                    <p>Please choose a favorite recipe!</p>
+                </div>
+            </div>
+        </div>;
+
+    } else if(props.favoriteDishes && props.favoriteDishes.length > 0 && location.pathname === "/favorites"){
+        overviewCards = <div className="row">
             {
-                location.pathname === "/favorites" && props.favoriteDishes.map((dish) => {
+                props.favoriteDishes.map((dish) => {
 
                     return <div className="card col">
                         <img src={dish.imageUrl} className="card-img-top recipePicture"/>
@@ -43,6 +47,18 @@ export default function FavoritesPage(props: IFavoriteProps) {
 
 
                 })
+            }
+        </div>;
+    } else{
+        overviewCards = null;
+    }
+
+
+
+    return <div className="center-screen">
+        <div className="row">
+            {
+                overviewCards
             }
         </div>
 
