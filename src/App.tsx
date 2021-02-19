@@ -10,6 +10,8 @@ import NotFound from "./components/NotFoundPage";
 import {IDish} from "./IDish";
 import {generateHash} from "./utils/Hash";
 import {RandomRecipeErrorBoundary} from "./components/RandomRecipePage/RandomRecipeErrorBoundary";
+import SearchBar from "./components/SearchBar";
+import SearchPage from "./components/SearchPage/SearchPage";
 
 
 function App() {
@@ -74,6 +76,7 @@ function App() {
                 <Link to="/">Random Recipe</Link>
                 <Link to="/favorites">Favorites</Link>
                 <Link to="/registry">Registry</Link>
+                <SearchBar></SearchBar>
             </div>
 
             <Switch>
@@ -87,6 +90,7 @@ function App() {
                                                         addToFavorite={addDishToFavorite}
                                                         removeFromFavorite={removeDishFromFavorite}
                 /></Route>
+                <Route path="/search"><SearchPage/></Route>
                 <Route path="/registry"><RegistryPage/></Route>
                 <Route><NotFound/></Route>
             </Switch>

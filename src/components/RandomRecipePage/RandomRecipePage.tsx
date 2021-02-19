@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import '../../styles/randomRecipe.css'
-import {fetchJson} from "../../helperFunctions/helperBackend";
+import {fetchJson, fetchRecipe} from "../../helperFunctions/helperBackend";
 import {appId, appKey} from "../../constants/API";
 import {IDish} from "../../IDish";
 import {generateHash} from "../../utils/Hash";
@@ -55,13 +55,6 @@ export default function RandomRecipePage(props: PropsInterface) {
         validateFoodishUrl(imageUrlObject.image);
 
         return imageUrlObject;
-    }
-
-    const fetchRecipe = async (dishName: string): Promise<any> => {
-        const EDAMAM_API = "https://api.edamam.com/search?";
-        let recipeResponse = await fetchJson(EDAMAM_API + `app_id=${appId}&app_key=${appKey}&q=${dishName}`)
-
-        return recipeResponse;
     }
 
     const createDish = (recipeResponse: any, title: string, imageUrl: ImageAPIResponse) : void => {

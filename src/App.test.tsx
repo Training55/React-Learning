@@ -6,7 +6,7 @@ import {BrowserRouter} from "react-router-dom";
 
 beforeEach(() => {
     let httpCall = jest.fn();
-    
+
     httpCall
         .mockReturnValueOnce({
             json: () => Promise.resolve({image: "https://foodish-api.herokuapp.com/images/biryani/biryani70.jpg"}),
